@@ -1,2 +1,0 @@
-# QuantityMeasurementAppFrontend
-Frontend
