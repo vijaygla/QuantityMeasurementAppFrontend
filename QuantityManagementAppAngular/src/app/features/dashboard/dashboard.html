@@ -1,0 +1,102 @@
+<div class="dashboard-wrapper">
+    <header class="header">
+        <div class="header-main">
+            <h1>Welcome To Quantity Measurement</h1>
+        </div>
+    </header>
+
+    <main class="content">
+        <!-- 🔷 TYPE SELECTION -->
+        <section class="section">
+            <h2 class="section-title">CHOOSE TYPE</h2>
+            <div class="rectangular-grid">
+                <div class="rect-card type-card" [class.active]="type === 'length'" (click)="setType('length')">
+                    <i class="material-icons">straighten</i>
+                    <span>Length</span>
+                </div>
+                <div class="rect-card type-card" [class.active]="type === 'weight'" (click)="setType('weight')">
+                    <i class="material-icons">balance</i>
+                    <span>Weight</span>
+                </div>
+                <div class="rect-card type-card" [class.active]="type === 'temperature'" (click)="setType('temperature')">
+                    <i class="material-icons">thermostat</i>
+                    <span>Temperature</span>
+                </div>
+                <div class="rect-card type-card" [class.active]="type === 'volume'" (click)="setType('volume')">
+                    <i class="material-icons">water_drop</i>
+                    <span>Volume</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🔷 ACTION SELECTION -->
+        <section class="section">
+            <h2 class="section-title">CHOOSE ACTION</h2>
+            <div class="rectangular-grid action-grid">
+                <div class="rect-card action-card" [class.active]="action === 'comparison'" (click)="onActionChange('comparison')">
+                    <span>Comparison</span>
+                </div>
+                <div class="rect-card action-card" [class.active]="action === 'conversion'" (click)="onActionChange('conversion')">
+                    <span>Conversion</span>
+                </div>
+                <div class="rect-card action-card" [class.active]="action === 'arithmetic'" (click)="onActionChange('arithmetic')">
+                    <span>Arithmetic</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🔷 INPUT SECTION -->
+        <div class="input-grid">
+            <!-- FROM SECTION -->
+            <div class="input-group">
+                <h3 class="input-label">FROM</h3>
+                <div class="input-container">
+                    <input type="number" class="main-input" [ngModel]="value1" (ngModelChange)="onValueChange($event, true)" />
+                    <select class="unit-select" [ngModel]="fromUnit" (ngModelChange)="onUnitChange($event, true)">
+                        <option *ngFor="let u of units" [value]="u">{{ u | titlecase }}</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- TO SECTION (OR SECOND INPUT) -->
+            <div class="input-group">
+                <h3 class="input-label">{{ action === 'conversion' ? 'TO' : 'SECOND VALUE' }}</h3>
+                <div class="input-container">
+                    <ng-container *ngIf="action === 'conversion'">
+                        <div class="result-display">{{ result | number:'1.0-3' }}</div>
+                    </ng-container>
+                    <ng-container *ngIf="action !== 'conversion'">
+                        <input type="number" class="main-input" [ngModel]="value2" (ngModelChange)="onValueChange($event, false)" />
+                    </ng-container>
+                    
+                    <select class="unit-select" [ngModel]="toUnit" (ngModelChange)="onUnitChange($event, false)">
+                        <option *ngFor="let u of units" [value]="u">{{ u | titlecase }}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🔷 ARITHMETIC OPERATIONS -->
+        <section class="section" *ngIf="action === 'arithmetic'">
+            <div class="operation-group">
+                <button class="op-btn" [class.active]="operation === 'add'" (click)="operation = 'add'; calculate()">+</button>
+                <button class="op-btn" [class.active]="operation === 'sub'" (click)="operation = 'sub'; calculate()">-</button>
+                <button class="op-btn" [class.active]="operation === 'mul'" (click)="operation = 'mul'; calculate()">×</button>
+                <button class="op-btn" [class.active]="operation === 'div'" (click)="operation = 'div'; calculate()">÷</button>
+            </div>
+        </section>
+
+        <!-- 🔷 FINAL RESULT FOR COMPARISON / ARITHMETIC -->
+        <div class="final-result" *ngIf="action !== 'conversion'">
+            <div class="result-label">RESULT</div>
+            <div class="result-value">
+                <span *ngIf="action === 'comparison'">
+                    {{ result }}
+                </span>
+                <span *ngIf="action === 'arithmetic'">
+                    {{ result | number:'1.0-3' }} {{ toUnit | titlecase }}
+                </span>
+            </div>
+        </div>
+    </main>
+</div>
