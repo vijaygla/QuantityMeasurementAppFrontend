@@ -1,1 +1,26 @@
-<router-outlet></router-outlet>
+<mat-toolbar color="primary" class="main-header">
+  <span routerLink="/">Quantity Measurement</span>
+  <span class="spacer"></span>
+  
+  <button mat-icon-button (click)="themeService.toggleTheme()" title="Toggle Theme">
+    <mat-icon>{{ themeService.isDarkMode() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  </button>
+
+  <ng-container *ngIf="auth.user() as user; else guest">
+    <button mat-button routerLink="/profile">
+      <mat-icon>person</mat-icon> Profile
+    </button>
+    <button mat-button (click)="auth.logout()">
+      <mat-icon>logout</mat-icon> Logout
+    </button>
+  </ng-container>
+
+  <ng-template #guest>
+    <button mat-button routerLink="/login">Login</button>
+    <button mat-raised-button color="accent" routerLink="/register">Register</button>
+  </ng-template>
+</mat-toolbar>
+
+<main class="content-container">
+  <router-outlet></router-outlet>
+</main>
