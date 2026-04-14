@@ -1,102 +1,134 @@
 <div class="dashboard-wrapper">
-    <header class="header">
-        <div class="header-main">
-            <h1>Welcome To Quantity Measurement</h1>
+  <div class="header-section">
+    <h1>Smart Measurement Tool</h1>
+    <p>Convert, Compare and Calculate quantities with precision.</p>
+  </div>
+
+  <div class="main-content">
+    <div class="sidebar">
+      <mat-card class="type-card">
+        <mat-card-header>
+          <mat-card-subtitle>Measurement Category</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="type-buttons">
+            <button mat-button [class.active]="type === 'length'" (click)="setType('length')">
+              <mat-icon>straighten</mat-icon> Length
+            </button>
+            <button mat-button [class.active]="type === 'weight'" (click)="setType('weight')">
+              <mat-icon>fitness_center</mat-icon> Weight
+            </button>
+            <button mat-button [class.active]="type === 'temperature'" (click)="setType('temperature')">
+              <mat-icon>thermostat</mat-icon> Temperature
+            </button>
+            <button mat-button [class.active]="type === 'volume'" (click)="setType('volume')">
+              <mat-icon>opacity</mat-icon> Volume
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="tool-content">
+      <mat-card class="action-card">
+        <mat-card-header>
+          <mat-card-title>Operations</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-button-toggle-group [value]="action" (change)="onActionChange($event.value)" class="rectangular-toggle">
+            <mat-button-toggle value="comparison">Compare</mat-button-toggle>
+            <mat-button-toggle value="conversion">Convert</mat-button-toggle>
+            <mat-button-toggle value="arithmetic">Math</mat-button-toggle>
+          </mat-button-toggle-group>
+
+          <div *ngIf="action === 'arithmetic'" class="op-select-wrapper">
+            <span class="op-label">Select Math Operation:</span>
+            <mat-button-toggle-group [(ngModel)]="operation" class="rectangular-toggle secondary-toggle">
+              <mat-button-toggle value="add"><mat-icon>add</mat-icon> Add</mat-button-toggle>
+              <mat-button-toggle value="sub"><mat-icon>remove</mat-icon> Sub</mat-button-toggle>
+              <mat-button-toggle value="mul"><mat-icon>close</mat-icon> Mul</mat-button-toggle>
+              <mat-button-toggle value="div"><mat-icon>horizontal_rule</mat-icon> Div</mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <div class="inputs-grid">
+        <mat-card class="input-card">
+          <mat-card-header><mat-card-subtitle>Primary Value</mat-card-subtitle></mat-card-header>
+          <mat-card-content>
+            <mat-form-field appearance="outline">
+              <input matInput type="number" [(ngModel)]="value1">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-select [(ngModel)]="fromUnit">
+                <mat-option *ngFor="let u of units" [value]="u">{{ u | titlecase }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-card-content>
+        </mat-card>
+
+        <div class="operator-symbol">
+          <mat-icon *ngIf="action === 'conversion'">arrow_forward</mat-icon>
+          <mat-icon *ngIf="action === 'comparison'">compare_arrows</mat-icon>
+          <mat-icon *ngIf="action === 'arithmetic'">
+            {{ operation === 'add' ? 'add' : operation === 'sub' ? 'remove' : operation === 'mul' ? 'close' : 'horizontal_rule' }}
+          </mat-icon>
         </div>
-    </header>
 
-    <main class="content">
-        <!-- 🔷 TYPE SELECTION -->
-        <section class="section">
-            <h2 class="section-title">CHOOSE TYPE</h2>
-            <div class="rectangular-grid">
-                <div class="rect-card type-card" [class.active]="type === 'length'" (click)="setType('length')">
-                    <i class="material-icons">straighten</i>
-                    <span>Length</span>
-                </div>
-                <div class="rect-card type-card" [class.active]="type === 'weight'" (click)="setType('weight')">
-                    <i class="material-icons">balance</i>
-                    <span>Weight</span>
-                </div>
-                <div class="rect-card type-card" [class.active]="type === 'temperature'" (click)="setType('temperature')">
-                    <i class="material-icons">thermostat</i>
-                    <span>Temperature</span>
-                </div>
-                <div class="rect-card type-card" [class.active]="type === 'volume'" (click)="setType('volume')">
-                    <i class="material-icons">water_drop</i>
-                    <span>Volume</span>
-                </div>
-            </div>
-        </section>
+        <mat-card class="input-card">
+          <mat-card-header>
+            <mat-card-subtitle>{{ action === 'conversion' ? 'Target Unit' : 'Secondary Value' }}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-form-field appearance="outline" *ngIf="action !== 'conversion'">
+              <input matInput type="number" [(ngModel)]="value2">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-select [(ngModel)]="toUnit">
+                <mat-option *ngFor="let u of units" [value]="u">{{ u | titlecase }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-card-content>
+        </mat-card>
+      </div>
 
-        <!-- 🔷 ACTION SELECTION -->
-        <section class="section">
-            <h2 class="section-title">CHOOSE ACTION</h2>
-            <div class="rectangular-grid action-grid">
-                <div class="rect-card action-card" [class.active]="action === 'comparison'" (click)="onActionChange('comparison')">
-                    <span>Comparison</span>
-                </div>
-                <div class="rect-card action-card" [class.active]="action === 'conversion'" (click)="onActionChange('conversion')">
-                    <span>Conversion</span>
-                </div>
-                <div class="rect-card action-card" [class.active]="action === 'arithmetic'" (click)="onActionChange('arithmetic')">
-                    <span>Arithmetic</span>
-                </div>
-            </div>
-        </section>
+      <div class="calculate-section">
+        <button mat-flat-button color="primary" class="calc-btn" (click)="onCalculate()" [disabled]="isCalculating">
+          <mat-icon>{{ isCalculating ? 'sync' : 'calculate' }}</mat-icon>
+          {{ isCalculating ? 'Processing...' : 'Calculate & Save' }}
+        </button>
+        
+        <p class="auth-hint" *ngIf="!auth.user()">
+          <mat-icon>info</mat-icon> <a routerLink="/login">Sign in</a> to save this to your history.
+        </p>
+      </div>
 
-        <!-- 🔷 INPUT SECTION -->
-        <div class="input-grid">
-            <!-- FROM SECTION -->
-            <div class="input-group">
-                <h3 class="input-label">FROM</h3>
-                <div class="input-container">
-                    <input type="number" class="main-input" [ngModel]="value1" (ngModelChange)="onValueChange($event, true)" />
-                    <select class="unit-select" [ngModel]="fromUnit" (ngModelChange)="onUnitChange($event, true)">
-                        <option *ngFor="let u of units" [value]="u">{{ u | titlecase }}</option>
-                    </select>
-                </div>
-            </div>
+      <mat-card class="result-display" [class.has-result]="result !== '-'">
+        <mat-card-content>
+          <span class="label">FINAL RESULT</span>
+          <div class="value">{{ result }} <span class="unit" *ngIf="action !== 'comparison' && result !== '-'">{{ toUnit }}</span></div>
+        </mat-card-content>
+      </mat-card>
 
-            <!-- TO SECTION (OR SECOND INPUT) -->
-            <div class="input-group">
-                <h3 class="input-label">{{ action === 'conversion' ? 'TO' : 'SECOND VALUE' }}</h3>
-                <div class="input-container">
-                    <ng-container *ngIf="action === 'conversion'">
-                        <div class="result-display">{{ result | number:'1.0-3' }}</div>
-                    </ng-container>
-                    <ng-container *ngIf="action !== 'conversion'">
-                        <input type="number" class="main-input" [ngModel]="value2" (ngModelChange)="onValueChange($event, false)" />
-                    </ng-container>
-                    
-                    <select class="unit-select" [ngModel]="toUnit" (ngModelChange)="onUnitChange($event, false)">
-                        <option *ngFor="let u of units" [value]="u">{{ u | titlecase }}</option>
-                    </select>
-                </div>
-            </div>
+      <!-- Recent History Preview -->
+      <div class="recent-history-section" *ngIf="auth.user() && recentHistory.length > 0">
+        <div class="section-header">
+          <h3>Recent Activity</h3>
+          <button mat-button color="primary" routerLink="/profile">View All</button>
         </div>
-
-        <!-- 🔷 ARITHMETIC OPERATIONS -->
-        <section class="section" *ngIf="action === 'arithmetic'">
-            <div class="operation-group">
-                <button class="op-btn" [class.active]="operation === 'add'" (click)="operation = 'add'; calculate()">+</button>
-                <button class="op-btn" [class.active]="operation === 'sub'" (click)="operation = 'sub'; calculate()">-</button>
-                <button class="op-btn" [class.active]="operation === 'mul'" (click)="operation = 'mul'; calculate()">×</button>
-                <button class="op-btn" [class.active]="operation === 'div'" (click)="operation = 'div'; calculate()">÷</button>
-            </div>
-        </section>
-
-        <!-- 🔷 FINAL RESULT FOR COMPARISON / ARITHMETIC -->
-        <div class="final-result" *ngIf="action !== 'conversion'">
-            <div class="result-label">RESULT</div>
-            <div class="result-value">
-                <span *ngIf="action === 'comparison'">
-                    {{ result }}
-                </span>
-                <span *ngIf="action === 'arithmetic'">
-                    {{ result | number:'1.0-3' }} {{ toUnit | titlecase }}
-                </span>
-            </div>
-        </div>
-    </main>
+        <mat-card class="recent-list-card">
+          <div class="history-item" *ngFor="let item of recentHistory">
+            <span class="time">{{ 1000 * item.timestamp.seconds | date:'shortTime' }}</span>
+            <span class="desc">
+              {{ item.value1 }} {{ item.fromUnit }} 
+              <span class="sym">{{ item.action === 'conversion' ? '→' : item.action === 'comparison' ? 'vs' : '+' }}</span>
+              {{ item.action === 'conversion' ? '' : item.value2 }} {{ item.toUnit }}
+            </span>
+            <span class="res">= {{ item.result }}</span>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+  </div>
 </div>
